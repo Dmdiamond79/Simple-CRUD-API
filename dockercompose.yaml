@@ -1,0 +1,33 @@
+version: '3'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  todo-app:
+    build:
+      ports:
+        - "8080:8080"
+      volumes:
+        - ./todo-app:/usr/src/app
+      networks:
+        - app-tier
+      depends_on:
+        - pgsqldb
+  pgsqldb:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgsqldb:/var/lib/postgresql/data
+    networks:
+      - app-tier
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=todo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=121212
+      - POSTGRES_HOST=localhost
+    
